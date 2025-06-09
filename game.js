@@ -6,8 +6,9 @@ function createUser(name,marker) {
         name: name,
         marker: marker,
         greet() {
-            console.log(`Hello, my name is ${this.name} and I have ${getPoints()} points. My marker is ${this.marker}.
-                `);
+            console.log(`Hello, my name is ${this.name} 
+                and I have ${getPoints()} points.
+                 My marker is ${this.marker}.`);
         },
         getPoints: getPoints,
         givePoints: givePoints  
