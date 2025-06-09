@@ -1,11 +1,26 @@
-const board = Array(9).fill(null);
-  let currentPlayer = 'X';
+
+  function createUser(name, marker) {
+    let points = 0;
+    const getPoints = () => points;
+    const givePoints = () => points++;
+    return {
+      name,
+      marker,
+      getPoints,
+      givePoints
+    };
+  }
+
+  const playerX = createUser("Player 1", "X");
+  const playerO = createUser("Player 2", "O");
+  let currentPlayer = playerX;
+  let board = Array(9).fill(null);
   let gameActive = true;
 
   const winningCombinations = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Filas
-    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columnas
-    [0, 4, 8], [2, 4, 6]             // Diagonales
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]
   ];
 
   const boardElement = document.getElementById('board');
@@ -27,17 +42,19 @@ const board = Array(9).fill(null);
     const index = e.target.dataset.index;
     if (!gameActive || board[index]) return;
 
-    board[index] = currentPlayer;
+    board[index] = currentPlayer.marker;
     createBoard();
+
     if (checkWinner()) {
-      statusElement.textContent = `Ganó: ${currentPlayer}`;
+      currentPlayer.givePoints();
+      statusElement.textContent = `Winner: ${currentPlayer.name} (${currentPlayer.marker}) — Points: ${currentPlayer.getPoints()}`;
       gameActive = false;
     } else if (board.every(cell => cell)) {
-      statusElement.textContent = 'Empate';
+      statusElement.textContent = 'Its a tie';
       gameActive = false;
     } else {
-      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-      statusElement.textContent = `Turno de: ${currentPlayer}`;
+      currentPlayer = currentPlayer === playerX ? playerO : playerX;
+      statusElement.textContent = `${currentPlayer.name} (${currentPlayer.marker}) turn.`;
     }
   }
 
@@ -45,9 +62,10 @@ const board = Array(9).fill(null);
     for (let combo of winningCombinations) {
       const [a, b, c] = combo;
       if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-        document.querySelectorAll('.cell')[a].classList.add('winner');
-        document.querySelectorAll('.cell')[b].classList.add('winner');
-        document.querySelectorAll('.cell')[c].classList.add('winner');
+        const cells = document.querySelectorAll('.cell');
+        cells[a].classList.add('winner');
+        cells[b].classList.add('winner');
+        cells[c].classList.add('winner');
         return true;
       }
     }
@@ -55,67 +73,12 @@ const board = Array(9).fill(null);
   }
 
   function resetGame() {
-    board.fill(null);
-    currentPlayer = 'X';
+    board = Array(9).fill(null);
+    currentPlayer = playerX;
     gameActive = true;
-    statusElement.textContent = `Turno de: ${currentPlayer}`;
+    statusElement.textContent = `${currentPlayer.name} (${currentPlayer.marker}) turn`;
     createBoard();
   }
 
   createBoard();
-
-
-
-/*
-function createUser(name,marker) {
-    let points = 0;
-        const getPoints = () => points;
-        const givePoints = () => points++;
-    return {
-        name: name,
-        marker: marker,
-        greet() {
-            console.log(`Hello, my name is ${this.name} 
-                and I have ${getPoints()} points.
-                 My marker is ${this.marker}.`);
-        },
-        getPoints: getPoints,
-        givePoints: givePoints  
-}};
-
-function winGame(player1, player2) {
-    const winner = [player1, player2].find(p => p.getPoints() === 3);
-    console.log(winner ? `${winner.name} has won!` : "It's a tie!!");
-}
-
-function playGame(player1,player2){
-    //null
-}
-
-
-
-// test:
-const user1 = createUser('Roma', 'X');
-user1.givePoints(); 
-user1.givePoints(); 
-user1.givePoints();
-const user2 = createUser('Juan', 'O');
-user2.givePoints(); 
-user2.givePoints();
-
-user1.greet(); 
-user2.greet();
-winGame(user1,user2);
-
-/******orignal**** 
-function winGame(player1,player2){
-    if (player1.getPoints() === 3){
-        console.log(`${player1.name} has won ! `);
-    } else if (player2.getPoints() === 3){
-        console.log(`${player2.name} has won ! `);
-    } else {
-        console.log ("Its a tie !!");
-    }
-}*/
-/***********simplificada***** */
 
