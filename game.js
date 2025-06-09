@@ -27,6 +27,7 @@ user1.greet();
 user2.greet();
 winGame(user1,user2);
 
+/******orignal**** */
 function winGame(player1,player2){
     if (player1.getPoints() === 3){
         console.log(`${player1.name} has won ! `);
@@ -35,5 +36,9 @@ function winGame(player1,player2){
     } else {
         console.log ("Its a tie !!");
     }
-
+}
+/***********simplificada***** */
+function winGame(player1, player2) {
+    const winner = [player1, player2].find(p => p.getPoints() === 3);
+    console.log(winner ? `${winner.name} has won!` : "It's a tie!!");
 }
